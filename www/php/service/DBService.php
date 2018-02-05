@@ -24,6 +24,8 @@ class DBService implements DB {
 
     private function initConexion() {
         try {
+            $this->connection = NULL;
+            $this->problems = 0;
             // Conectar
             $this->connection = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_DB, DB_USER, DB_PASSWORD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8';"));
             // Establecer el nivel de errores a EXCEPTION
@@ -36,10 +38,6 @@ class DBService implements DB {
 
     public function getProblems() {
         return $this->problems;
-    }
-
-    private function setProblems($problems) {
-        $this->problems = $problems;
     }
 
     private function addProblem() {
@@ -60,7 +58,7 @@ class DBService implements DB {
         return $retorno;
     }
 
-    public function begin() {
+    private function begin() {
         $retorno = FALSE;
         if ($this->check()) {
             try {
@@ -76,21 +74,7 @@ class DBService implements DB {
         return $retorno;
     }
 
-    public function commit() {
-        $retorno = FALSE;
-        if ($this->check()) {
-            try {
-                if ($this->connection->inTransaction()) {
-                    $retorno = $this->connection->commit();
-                }
-            } catch (PDOException $e) {
-                $this->rollBack($e);
-            }
-        }
-        return $retorno;
-    }
-
-    public function rollBack(PDOException $e = NULL) {
+    private function rollBack(PDOException $e = NULL) {
         $retorno = FALSE;
         $this->addProblem();
         if ($this->check()) {
@@ -103,6 +87,20 @@ class DBService implements DB {
                 }
             } catch (PDOException $e) {
                 error_log($e->getMessage());
+            }
+        }
+        return $retorno;
+    }
+
+    public function commit() {
+        $retorno = FALSE;
+        if ($this->check()) {
+            try {
+                if ($this->connection->inTransaction()) {
+                    $retorno = $this->connection->commit();
+                }
+            } catch (PDOException $e) {
+                $this->rollBack($e);
             }
         }
         return $retorno;
