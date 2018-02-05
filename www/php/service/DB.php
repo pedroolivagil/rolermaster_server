@@ -7,27 +7,6 @@
  */
 
 interface DB {
-    /**
-     * Created by OlivaDevelop.
-     * User: Oliva
-     * Date: 05/02/2018
-     * Time: 13:34
-     *
-     * Crea una conexión con la base de datos
-     * @return mixed
-     */
-    function connect();
-
-    /**
-     * Created by OlivaDevelop.
-     * User: Oliva
-     * Date: 05/02/2018
-     * Time: 13:34
-     *
-     * Cierra la conexión con la base de datos
-     * @return mixed
-     */
-    function disconnect();
 
     /**
      * Created by OlivaDevelop.
