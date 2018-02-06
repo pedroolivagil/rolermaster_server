@@ -6,23 +6,26 @@
  * Time: 13:43
  */
 
-class DBService implements DB {
+abstract class DBManager implements DB {
 
     private $connection;
     private $problems;
     private $transaction;
 
-    public function initialize($transactions = FALSE) {
-        $this->setProblems(0);
-        $this->initConexion();
-        $this->transaction = $transactions;
+    /**
+     * DBService constructor.
+     */
+    function __construct($transactions = FALSE) {
+        $this->initialize($transactions);
     }
 
     public function close() {
         $this->connection = NULL;
     }
 
-    private function initConexion() {
+    private function initialize($transactions = FALSE) {
+        $this->transaction = $transactions;
+        $this->problems = 0;
         try {
             $this->connection = NULL;
             $this->problems = 0;
