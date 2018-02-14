@@ -6,7 +6,7 @@ $entity = $_POST[ 'entity' ];
 $userId = $_POST[ 'userId' ];
 $idEntity = $_POST[ 'idEntity' ];
 $result = array(
-    'TestEntity' => array(
+    'user' => array(
         array(
             'key'  => 1234,
             'text' => 'Test texto de prueba para el usuario'
