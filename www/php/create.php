@@ -8,6 +8,7 @@
 error_reporting(0);
 header("Content-type: application/json");
 require_once('service/Service.php');
+require_once('Tools.php');
 // $obj1 = array(
 //     'entity'  => 'country',
 //     'country' => array(
@@ -37,11 +38,12 @@ require_once('service/Service.php');
 // array_push($objects, json_encode($obj1));
 // array_push($objects, json_encode($obj2));
 $entities = $_POST["entity"];
-$service = new Service();
-foreach ($entities as $value) {
+/*$service = new Service();*/
+Tools::instance()->writeToFile("archivo.txt", $entities, "a+");
+/*foreach ($entities as $value) {
     $query = new Query();
     $query->setJSONFields($value);
     $service->persist($query);
 }
-$service->close();
+$service->close();*/
 echo "{}";

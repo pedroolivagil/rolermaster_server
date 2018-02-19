@@ -6,7 +6,6 @@
  * Time: 13:43
  */
 include_once('DB.php');
-require_once('../Tools.php');
 
 abstract class DBManager implements DB {
 
@@ -82,14 +81,12 @@ abstract class DBManager implements DB {
             try {
                 if ($e != NULL) {
                     error_log($e->getMessage());
-                    Tools::instance()->writeToFile("../archivo.txt", array($e->getMessage()), "a+");
                 }
                 if ($this->transaction === TRUE && $this->connection->inTransaction()) {
                     $retorno = $this->connection->rollBack();
                 }
             } catch (PDOException $e) {
                 error_log($e->getMessage());
-                Tools::instance()->writeToFile("../archivo.txt", array($e->getMessage()), "a+");
             }
         }
         return $retorno;
