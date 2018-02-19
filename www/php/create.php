@@ -5,25 +5,47 @@
  * Date: 05/02/2018
  * Time: 13:34
  */
-
 require_once('service/Service.php');
-
-$query = new Query();
-$query->setFields(array(
-    'username' => 'testuser',
-    'pass' => '1234',
-    'email' => 'test@user.com',
-    'name' => 'Test',
-    'lastname' => 'User Account',
-    'idCountry' => 1,
-    'phone' => '123654987',
-    'birthdate' => '1991-10-20',
-    'idGender' => 1,
-    'isMaster' => true,
-    'flagActive' => true,
-    'flagStatus' => 1,
-));
-$query->setTable("user");
-
-$service = new Service();
-$service->persist($query);
+// $obj1 = array(
+//     'entity'  => 'country',
+//     'country' => array(
+//         'code'     => 'fsd',
+//         'idTrans'  => 1,
+//         'idLocale' => 1
+//     )
+// );
+// $obj2 = array(
+//     'entity' => 'user',
+//     'user'   => array(
+//         'username'   => 'testuser',
+//         'pass'       => 'a1234',
+//         'email'      => 'test@user.com',
+//         'name'       => 'Test',
+//         'lastname'   => 'User Account',
+//         'idCountry'  => 1,
+//         'phone'      => '123654987',
+//         'birthdate'  => '1991-10-20',
+//         'idGender'   => 1,
+//         'isMaster'   => TRUE,
+//         'flagActive' => TRUE,
+//         'flagStatus' => 1
+//     )
+// );
+// $objects = array();
+// array_push($objects, json_encode($obj1));
+// array_push($objects, json_encode($obj2));
+$entities = $_POST[ 'entity[]' ];
+$file = fopen("archivo.txt", "w");
+// fwrite($file, "Esto es una nueva linea de texto" . PHP_EOL);
+// fwrite($file, "Otra más" . PHP_EOL);
+foreach ($entities as $entity) {
+    fwrite($file, $entity);
+}
+fclose($file);
+// $service = new Service();
+// foreach ($entities as $value) {
+//     $query = new Query();
+//     $query->setJSONFields($value);
+//     $service->persist($query);
+// }
+// $service->close();

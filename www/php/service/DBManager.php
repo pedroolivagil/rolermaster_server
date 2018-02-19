@@ -5,6 +5,7 @@
  * Date: 05/02/2018
  * Time: 13:43
  */
+include_once('DB.php');
 
 abstract class DBManager implements DB {
 
@@ -12,25 +13,21 @@ abstract class DBManager implements DB {
     private $problems;
     private $transaction;
 
-    /**
-     * DBService constructor.
-     */
-    function __construct($transactions = FALSE) {
-        $this->initialize($transactions);
-    }
-
     public function close() {
+        if ($this->transaction && $this->problems == 0) {
+            $this->commit();
+        }
         $this->connection = NULL;
     }
 
-    private function initialize($transactions = FALSE) {
+    public function initialize($transactions = FALSE) {
         $this->transaction = $transactions;
         $this->problems = 0;
         try {
             $this->connection = NULL;
             $this->problems = 0;
             // Conectar
-            $this->connection = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_DB, DB_USER, DB_PASSWORD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8';"));
+            $this->connection = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_DB, DB_USER, DB_PASSWORD, array( PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8';" ));
             // Establecer el nivel de errores a EXCEPTION
             $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
@@ -180,7 +177,7 @@ abstract class DBManager implements DB {
         $retorno = FALSE;
         $this->begin();
         try {
-            if ($query != null) {
+            if ($query != NULL) {
                 $sentencia = $this->connection->prepare($query->toPersist());
                 $sentencia->execute();
                 $retorno = TRUE;
@@ -197,7 +194,7 @@ abstract class DBManager implements DB {
         $retorno = FALSE;
         $this->begin();
         try {
-            if ($query != null) {
+            if ($query != NULL) {
                 $sentencia = $this->connection->prepare($query->toMerge());
                 $sentencia->execute();
                 $retorno = TRUE;
@@ -214,7 +211,7 @@ abstract class DBManager implements DB {
         $retorno = FALSE;
         $this->begin();
         try {
-            if ($query != null) {
+            if ($query != NULL) {
                 $sentencia = $this->connection->prepare($query->toRemove());
                 $sentencia->execute();
                 $retorno = TRUE;

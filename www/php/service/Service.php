@@ -5,7 +5,6 @@
  * Date: 05/02/2018
  * Time: 13:34
  */
-
 require_once('DBConstants.php');
 require_once('Query.php');
 require_once('DBManager.php');
@@ -19,6 +18,6 @@ class Service extends DBManager {
      * @param bool $transaction
      */
     public function __construct($transaction = FALSE) {
-        parent::__construct($transaction);
+        parent::initialize($transaction);
     }
 }

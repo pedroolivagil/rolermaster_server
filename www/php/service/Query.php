@@ -9,10 +9,8 @@
 class Query {
 
     private $table;
-    private $parameters;
     private $fields;
     private $joins;
-
     private $flags;
 
     /**
@@ -39,20 +37,6 @@ class Query {
     /**
      * @return mixed
      */
-    public function getParameters() {
-        return $this->parameters;
-    }
-
-    /**
-     * @param mixed $parameters
-     */
-    public function setParameters($parameters) {
-        $this->parameters = $parameters;
-    }
-
-    /**
-     * @return mixed
-     */
     public function getFields() {
         return $this->fields;
     }
@@ -62,6 +46,15 @@ class Query {
      */
     public function setFields($fields) {
         $this->fields = $fields;
+    }
+
+    /**
+     * @param mixed $fields
+     */
+    public function setJSONFields($json) {
+        $array = json_decode($json, TRUE);
+        $this->table = $array[ ENTITY ];
+        $this->fields = $array[ $this->table ];
     }
 
     /**
@@ -78,13 +71,15 @@ class Query {
         $this->joins = $joins;
     }
 
-
     function toFind() {
 
     }
 
     function toPersist() {
-
+        $fields = $this->arrayToString(array_keys($this->fields), FALSE);
+        $values = $this->arrayToString(array_values($this->fields));
+        $query = "INSERT INTO $this->table ($fields) VALUES ($values);\n";
+        return $query;
     }
 
     function toMerge() {
@@ -95,4 +90,23 @@ class Query {
 
     }
 
+    function arrayToString($array, $quotes = TRUE) {
+        $arr = array();
+        $count = 0;
+        foreach ($array as $item) {
+            $val = NULL;
+            if (!is_numeric($item)) {
+                if ($quotes) {
+                    $val = "'" . $item . "'";
+                } else {
+                    $val = $item;
+                }
+            } else {
+                $val = $item;
+            }
+            array_push($arr, $val);
+            $count++;
+        }
+        return implode(',', $arr);
+    }
 }
