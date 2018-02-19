@@ -1,0 +1,5 @@
+entity -> [0] {"entity":"GenericTrans","GenericTrans":{"idLocale":1,"idTrans":1,"text":"Español"}}
+entity -> [1] {"entity":"locale","locale":{"codeISO":"ES","idLocale":1,"idTrans":1}}
+-----------------------------------
+[1] {"entity":"GenericTrans","GenericTrans":{"idLocale":1,"idTrans":1,"text":"Español"}}
+[1] {"entity":"locale","locale":{"codeISO":"ES","idLocale":1,"idTrans":1}}

@@ -5,6 +5,8 @@
  * Date: 05/02/2018
  * Time: 13:34
  */
+error_reporting(0);
+header("Content-type: application/json");
 require_once('service/Service.php');
 // $obj1 = array(
 //     'entity'  => 'country',
@@ -34,18 +36,12 @@ require_once('service/Service.php');
 // $objects = array();
 // array_push($objects, json_encode($obj1));
 // array_push($objects, json_encode($obj2));
-$entities = $_POST[ 'entity[]' ];
-$file = fopen("archivo.txt", "w");
-// fwrite($file, "Esto es una nueva linea de texto" . PHP_EOL);
-// fwrite($file, "Otra más" . PHP_EOL);
-foreach ($entities as $entity) {
-    fwrite($file, $entity);
+$entities = $_POST["entity"];
+$service = new Service();
+foreach ($entities as $value) {
+    $query = new Query();
+    $query->setJSONFields($value);
+    $service->persist($query);
 }
-fclose($file);
-// $service = new Service();
-// foreach ($entities as $value) {
-//     $query = new Query();
-//     $query->setJSONFields($value);
-//     $service->persist($query);
-// }
-// $service->close();
+$service->close();
+echo "{}";
