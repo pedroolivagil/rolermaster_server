@@ -6,7 +6,6 @@
  * Time: 13:43
  */
 include_once('DB.php');
-require_once('../Tools.php');
 
 abstract class DBManager implements DB {
 
@@ -28,7 +27,7 @@ abstract class DBManager implements DB {
             $this->connection = NULL;
             $this->problems = 0;
             // Conectar
-            $this->connection = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_DB, DB_USER, DB_PASSWORD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8';"));
+            $this->connection = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_DB, DB_USER, DB_PASSWORD, array( PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8';" ));
             // Establecer el nivel de errores a EXCEPTION
             $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
@@ -82,14 +81,12 @@ abstract class DBManager implements DB {
             try {
                 if ($e != NULL) {
                     error_log($e->getMessage());
-                    Tools::instance()->writeToFile("../archivo.txt", array($e->getMessage()), "a+");
                 }
                 if ($this->transaction === TRUE && $this->connection->inTransaction()) {
                     $retorno = $this->connection->rollBack();
                 }
             } catch (PDOException $e) {
                 error_log($e->getMessage());
-                Tools::instance()->writeToFile("../archivo.txt", array($e->getMessage()), "a+");
             }
         }
         return $retorno;
@@ -150,6 +147,23 @@ abstract class DBManager implements DB {
                 $sentencia = $this->connection->prepare($query);
                 $sentencia->execute($query->getParameters());
                 $retorno = json_encode($sentencia->fetchAll(PDO::FETCH_CLASS));
+            } else {
+                throw new PDOException("Query is null");
+            }
+        } catch (PDOException $e) {
+            $this->rollBack($e);
+        }
+        return $retorno;
+    }
+
+    public function preparedToJSON($query) {
+        $retorno = NULL;
+        $this->begin();
+        try {
+            if ($query != NULL) {
+                $sentencia = $this->connection->prepare($query);
+                $sentencia->execute();
+                $retorno = json_encode($sentencia->fetch(PDO::FETCH_ASSOC));
             } else {
                 throw new PDOException("Query is null");
             }

@@ -1,5 +1,2 @@
-entity -> [0] {"entity":"GenericTrans","GenericTrans":{"idLocale":1,"idTrans":1,"text":"Español"}}
-entity -> [1] {"entity":"locale","locale":{"codeISO":"ES","idLocale":1,"idTrans":1}}
------------------------------------
-[1] {"entity":"GenericTrans","GenericTrans":{"idLocale":1,"idTrans":1,"text":"Español"}}
-[1] {"entity":"locale","locale":{"codeISO":"ES","idLocale":1,"idTrans":1}}
+[2018201820182018-FebFeb-MonMon] [0]{"entity":"locale","locale":{"codeISO":"ES","idLocale":1,"idTrans":"{\"entity\":\"locale_trans\",\"locale_trans\":{}}"}}
+[2018201820182018-FebFeb-MonMon] [1]{"entity":"locale_trans","locale_trans":{}}
