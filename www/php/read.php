@@ -7,18 +7,23 @@
  */
 error_reporting(0);
 header("Content-type: application/json");
-
-$typeQuery = $_POST['typeQuery'];
-$entity = $_POST['entity'];
-$userId = $_POST['userId'];
-$idEntity = $_POST['idEntity'];
+$typeQuery = $_POST[ 'typeQuery' ];
+$entity = $_POST[ 'entity' ];
+$userId = $_POST[ 'userId' ];
+$idEntity = $_POST[ 'idEntity' ];
 $result = array(
-    'country' => array(
-        'idCountry' => 123,
-        'code' => 'ES',
-        'translation' => array(
-            'idLocale' => 1,
-            'text' => 'Español'
+    'idCountry'     => 135,
+    'idLocale'      => 1,
+    'code'          => 'ES',
+    'country_trans' => array(
+        array(
+            'idCountry' => 135,
+            'idLocale'  => 1,
+            'text'      => 'Español'
+        ), array(
+            'idCountry' => 135,
+            'idLocale'  => 2,
+            'text'      => 'Spain'
         )
     )
 );
