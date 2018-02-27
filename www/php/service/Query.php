@@ -53,8 +53,8 @@ class Query {
      */
     public function setJSONFields($json) {
         $array = json_decode($json, TRUE);
-        $this->table = $array[ ENTITY ];
-        $this->fields = $array[ $this->table ];
+        $this->table = $array[ENTITY];
+        $this->fields = $array[$this->table];
     }
 
     /**
@@ -72,13 +72,25 @@ class Query {
     }
 
     function toFind() {
-
+        $properties = array_keys($this->fields);
+        $values = array_values($this->fields);
+        $where = array();
+        foreach ($properties as $key => $property) {
+            $val = "'" . $values[$key] . "'";
+            if (is_numeric($values[$key])) {
+                $val = $values[$key];
+            }
+            array_push($where, "$property = $val");
+        }
+        $condicion = implode(' AND ', $where);
+        $query = "SELECT * FROM $this->table WHERE $condicion;\n";
+        return $query;
     }
 
     function toPersist() {
-        $fields = $this->arrayToString(array_keys($this->fields), FALSE);
+        $properties = $this->arrayToString(array_keys($this->fields), FALSE);
         $values = $this->arrayToString(array_values($this->fields));
-        $query = "INSERT INTO $this->table ($fields) VALUES ($values);\n";
+        $query = "INSERT INTO $this->table ($properties) VALUES ($values);\n";
         return $query;
     }
 
