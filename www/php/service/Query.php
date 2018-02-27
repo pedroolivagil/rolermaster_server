@@ -80,10 +80,15 @@ class Query {
             if (is_numeric($values[$key])) {
                 $val = $values[$key];
             }
-            array_push($where, "$property = $val");
+            array_push($where, "t1.$property = $val");
         }
-        $condicion = implode(' AND ', $where);
-        $query = "SELECT * FROM $this->table WHERE $condicion;\n";
+        $condition = implode(' AND ', $where);
+        $tmpJoins = array();
+        foreach ($this->joins as $key => $join) {
+            array_push($tmpJoins, "LEFT JOIN $key " . $join);
+        }
+        $joinTable = implode(" ", $tmpJoins);
+        $query = "SELECT * FROM $this->table t1 $joinTable WHERE $condition;\n";
         return $query;
     }
 

@@ -5,7 +5,7 @@
  * Date: 05/02/2018
  * Time: 13:34
  */
-/*error_reporting(0);*/
+error_reporting(E_ALL ^ E_NOTICE);
 header("Content-type: application/json");
 /*$typeQuery = $_POST['typeQuery'];
 $entity = $_POST['entityQuery'];
@@ -61,24 +61,35 @@ $idEntity = $_POST['idEntity'];*/
 /*http://localhost/rolermaster/www/php/read.php?entityQuery=locale&typeQuery=1&filter%5B0%5D=codeISO&filter%5B1%5D=idLocale&codeISO=ES&idLocale=142*/
 require_once('service/Service.php');
 require_once('Tools.php');
+echo '[';
 $typeQuery = $_REQUEST['typeQuery'];
 $entity = $_REQUEST['entityQuery'];
 $userId = $_REQUEST['userId'];
 $filter = $_REQUEST['filter'];
 $search = $_REQUEST[$filter[0]];
-print_r($_REQUEST);
+//print_r($_REQUEST);
 $params = array();
 foreach ($filter as $key => $value) {
     $params = array_merge($params, array($value => $_REQUEST[$value]));
 }
 
-print_r($params);
+//print_r($params);
 
 $query = new Query();
 $query->setTable($entity);
+$query->setJoins(array(
+    'locale_trans t2' => 'ON t1.idLocale = t2.idLocaleGroup'
+));
 $query->setFields($params);
-print $query->toFind();
-$service = new Service();
+print_r(json_encode(array("QUERY" => $query->toFind())));
+echo ',';
 
+$service = new Service();
+$result = array($entity => $service->execute($query));
 $service->close();
-echo "{ 'result' : 'ok' }";
+
+print_r(json_encode($result));
+echo ',';
+
+print_r(json_encode(array('result' => 'ok')));
+echo "]";
