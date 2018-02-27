@@ -27,7 +27,7 @@ abstract class DBManager implements DB {
             $this->connection = NULL;
             $this->problems = 0;
             // Conectar
-            $this->connection = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_DB, DB_USER, DB_PASSWORD, array( PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8';" ));
+            $this->connection = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_DB, DB_USER, DB_PASSWORD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8';"));
             // Establecer el nivel de errores a EXCEPTION
             $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
@@ -156,7 +156,7 @@ abstract class DBManager implements DB {
         return $retorno;
     }
 
-    public function preparedToJSON($query) {
+    public function preparedToJSON($query = NULL) {
         $retorno = NULL;
         $this->begin();
         try {

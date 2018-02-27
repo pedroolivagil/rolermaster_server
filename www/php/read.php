@@ -7,23 +7,52 @@
  */
 error_reporting(0);
 header("Content-type: application/json");
-$typeQuery = $_POST[ 'typeQuery' ];
-$entity = $_POST[ 'entity' ];
-$userId = $_POST[ 'userId' ];
-$idEntity = $_POST[ 'idEntity' ];
-$result = array(
-    'idCountry'     => 135,
-    'idLocale'      => 1,
-    'code'          => 'ES',
-    'country_trans' => array(
-        array(
+$typeQuery = $_POST['typeQuery'];
+$entity = $_POST['entityQuery'];
+$userId = $_POST['userId'];
+$idEntity = $_POST['idEntity'];
+$result = array( // para crear array asociativo
+    $entity => array( // para crear array de lista de objetos
+        array( // array asociativo de cada objeto devuelto
+            '_persisted' => true,
             'idCountry' => 135,
-            'idLocale'  => 1,
-            'text'      => 'Español'
-        ), array(
-            'idCountry' => 135,
-            'idLocale'  => 2,
-            'text'      => 'Spain'
+            'locale' => array(
+                '_persisted' => true,
+                'idLocale' => 1,
+                'codeISO' => 'ES',
+                'translations' => array(
+                    array(
+                        '_persisted' => true,
+                        'idTrans' => 1,
+                        'idLocale' => 1,
+                        'idLocaleGroup' => 1,
+                        'text' => 'Español'
+                    ), array(
+                        '_persisted' => true,
+                        'idTrans' => 2,
+                        'idLocale' => 2,
+                        'idLocaleGroup' => 1,
+                        'text' => 'Spain'
+                    )
+                )
+            ),
+            'code' => 'ES',
+            'translations' => array(
+                array(
+                    '_persisted' => true,
+                    'idCountry' => 135,
+                    'idTrans' => 3,
+                    'idLocale' => 1,
+                    'text' => 'Español'
+                ),
+                array(
+                    '_persisted' => true,
+                    'idCountry' => 135,
+                    'idTrans' => 4,
+                    'idLocale' => 2,
+                    'text' => 'Spain'
+                )
+            )
         )
     )
 );
