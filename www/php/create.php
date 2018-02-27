@@ -38,12 +38,12 @@ require_once('Tools.php');
 // array_push($objects, json_encode($obj1));
 // array_push($objects, json_encode($obj2));
 $entities = $_POST["entity"];
-/*$service = new Service();*/
+$service = new Service();
 Tools::instance()->writeToFile("archivo.txt", $entities, "a+");
-/*foreach ($entities as $value) {
+foreach ($entities as $value) {
     $query = new Query();
     $query->setJSONFields($value);
     $service->persist($query);
 }
-$service->close();*/
-echo "{}";
+$service->close();
+echo "{ 'result' : 'ok' }";

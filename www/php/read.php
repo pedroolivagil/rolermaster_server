@@ -22,17 +22,17 @@ $result = array( // para crear array asociativo
                 'codeISO' => 'ES',
                 'translations' => array(
                     array(
-                        '_persisted' => true,
                         'idTrans' => 1,
                         'idLocale' => 1,
                         'idLocaleGroup' => 1,
-                        'text' => 'Español'
+                        'text' => 'Español',
+                        '_persisted' => true
                     ), array(
-                        '_persisted' => true,
                         'idTrans' => 2,
                         'idLocale' => 2,
                         'idLocaleGroup' => 1,
-                        'text' => 'Spain'
+                        'text' => 'Spain',
+                        '_persisted' => true
                     )
                 )
             ),
