@@ -70,26 +70,35 @@ $search = $_REQUEST[$filter[0]];
 //print_r($_REQUEST);
 $params = array();
 foreach ($filter as $key => $value) {
+    //if($value != "joins") { dehabilitado para el testing
     $params = array_merge($params, array($value => $_REQUEST[$value]));
+    //}
 }
 
-//print_r($params);
-
-$query = new Query();
-$query->setTable($entity);
-$query->setJoins(array(
-    'locale_trans t2' => 'ON t1.idLocale = t2.idLocaleGroup'
-));
-$query->setFields($params);
-print_r(json_encode(array("QUERY" => $query->toFind())));
+print_r(json_encode($params));
 echo ',';
 
 $service = new Service();
-$result = array($entity => $service->execute($query));
-$service->close();
+$query = new Query();
+$query->setTable($entity);
+$query->setJoins(array(
+    new Join('locale', 'locale_trans', 'locale', 'locale_trans', 'idLocale', 'idLocaleGroup', false)
+));
+$query->setFields($params);/*
+print_r(json_encode(array("Columns" => $query->getColumns())));
+$cols = array($entity => $service->getColumns($query));
+echo ',';
+print_r($cols);
+echo ',';*/
+
+print_r(json_encode(array("Query" => $query->toFind())));
+echo ',';
+
+$result = array($entity => $service->executeFind($query));
 
 print_r(json_encode($result));
 echo ',';
 
 print_r(json_encode(array('result' => 'ok')));
 echo "]";
+$service->close();

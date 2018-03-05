@@ -6,6 +6,7 @@
  * Time: 13:34
  */
 require_once('DBConstants.php');
+require_once('Join.php');
 require_once('Query.php');
 require_once('DBManager.php');
 

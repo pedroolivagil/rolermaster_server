@@ -106,7 +106,28 @@ abstract class DBManager implements DB {
         return $retorno;
     }
 
-    public function execute(Query $query = NULL) {
+    public function getColumns(Query $query = NULL, $table = NULL, $alias = "t1") {
+        $retorno = NULL;
+        $this->begin();
+        try {
+            if ($query != NULL && ($result = $this->connection->query($query->getColumns($table))) !== FALSE) {
+                $result = $result->fetchAll(PDO::FETCH_CLASS);
+                if ($result != NULL) {
+                    $retorno = array();
+                    foreach ($result as $field) {
+                        array_push($retorno, $alias . '.' . $field->Field);
+                    }
+                }
+            } else {
+                throw new PDOException("Query is null");
+            }
+        } catch (PDOException $e) {
+            $this->rollBack($e);
+        }
+        return $retorno;
+    }
+
+    public function executeFind(Query $query = NULL) {
         $retorno = NULL;
         $this->begin();
         try {

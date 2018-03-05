@@ -71,6 +71,14 @@ class Query {
         $this->joins = $joins;
     }
 
+    function getColumns($t = NULL) {
+        if ($t == NULL) {
+            $t = $this->table;
+        }
+        $query = "SHOW COLUMNS FROM $t;\n";
+        return $query;
+    }
+
     function toFind() {
         $properties = array_keys($this->fields);
         $values = array_values($this->fields);
@@ -80,15 +88,32 @@ class Query {
             if (is_numeric($values[$key])) {
                 $val = $values[$key];
             }
-            array_push($where, "t1.$property = $val");
+            array_push($where, "$this->table.$property = $val");
+            array_push($where, "$this->table.$property = $val");
         }
         $condition = implode(' AND ', $where);
         $tmpJoins = array();
-        foreach ($this->joins as $key => $join) {
-            array_push($tmpJoins, "LEFT JOIN $key " . $join);
+        $cols = array();
+        $service = new Service();
+        array_push($cols, implode(',', $service->getColumns($this, $this->table, $this->table)));
+        $count = 2;
+        foreach ($this->joins as $join) {
+            $colsTmp = $service->getColumns($this, $join->getTableJoin(), $join->getAliasTableJoin());
+            array_push($cols, implode(',', $colsTmp));
+
+            array_push($tmpJoins, $join->getJoinMySQL());
+            $count++;
         }
+        $service->close();
         $joinTable = implode(" ", $tmpJoins);
-        $query = "SELECT * FROM $this->table t1 $joinTable WHERE $condition;\n";
+        $columns = implode(',', $cols);
+        $finalCols = array();
+        foreach (explode(',', $columns) as $column) {
+            array_push($finalCols, $column . " AS \"" . $column . "\"");
+        }
+        $columns = implode(',', $finalCols);
+
+        $query = "SELECT $columns FROM $this->table $this->table $joinTable WHERE $condition;\n";
         return $query;
     }
 
