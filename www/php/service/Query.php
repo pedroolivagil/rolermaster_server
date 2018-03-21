@@ -151,4 +151,5 @@ class Query {
         }
         return implode(',', $arr);
     }
+
 }

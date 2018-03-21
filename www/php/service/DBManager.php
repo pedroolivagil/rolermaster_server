@@ -271,4 +271,5 @@ abstract class DBManager implements DB {
             error_log($e->getMessage());
         }
     }
+
 }

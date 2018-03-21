@@ -5,6 +5,7 @@
  * Date: 05/02/2018
  * Time: 13:34
  */
+
 error_reporting(0);
 header("Content-type: application/json");
 require_once('service/Service.php');
