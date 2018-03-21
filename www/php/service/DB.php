@@ -7,7 +7,6 @@
  */
 
 interface DB {
-
     /**
      * Created by OlivaDevelop.
      * User: Oliva

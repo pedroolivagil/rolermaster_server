@@ -56,6 +56,7 @@ $idEntity = $_POST['idEntity'];*/
         )
     )
 );*/
+
 /*echo json_encode($result);*/
 //URL de prueba
 /*http://localhost/rolermaster/www/php/read.php?entityQuery=locale&typeQuery=1&filter%5B0%5D=codeISO&filter%5B1%5D=idLocale&codeISO=ES&idLocale=142*/

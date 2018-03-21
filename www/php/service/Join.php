@@ -143,4 +143,5 @@ class Join {
         $condition .= " ON $this->alias.$this->pk = $this->aliasTableJoin.$this->pkTableJoin";
         return $condition;
     }
+
 }

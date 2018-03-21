@@ -109,11 +109,11 @@ class Query {
         $columns = implode(',', $cols);
         $finalCols = array();
         foreach (explode(',', $columns) as $column) {
-            array_push($finalCols, $column . " AS \"" . $column . "\"");
+            array_push($finalCols, $column . ' AS \''. $column . '\'');
         }
         $columns = implode(',', $finalCols);
 
-        $query = "SELECT $columns FROM $this->table $this->table $joinTable WHERE $condition;\n";
+        $query = "SELECT $columns FROM $this->table $this->table $joinTable WHERE $condition;";
         return $query;
     }
 
@@ -151,4 +151,5 @@ class Query {
         }
         return implode(',', $arr);
     }
+
 }

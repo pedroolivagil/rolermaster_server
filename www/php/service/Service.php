@@ -21,4 +21,5 @@ class Service extends DBManager {
     public function __construct($transaction = FALSE) {
         parent::initialize($transaction);
     }
+
 }
