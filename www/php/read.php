@@ -77,6 +77,7 @@ $arrayJoins = array();
 foreach ($joins as $join) {
     foreach ($join as $value) {
         array_push($arrayJoins, new Join($value));
+        Tools::instance()->writeToFile("text.txt", $value, "a+");
     }
 }
 $service = new Service();
@@ -85,12 +86,17 @@ $query->setTable($entity);
 $query->setJoins($arrayJoins);
 $query->setFields($params);
 $results = $service->executeFind($query);
-$result = array(
-    'result'      => 200,
-    'joins'       => $joins,
-    'arrayJoins' => $arrayJoins,
-    "query"       => $query->toFind(),
-    'entities'    => $results
-);
+if ($results != NULL) {
+    $result = array(
+        'result'   => 200,
+        'entities' => $results
+        // ,"query"      => $query->toFind()
+    );
+} else {
+    $result = array(
+        'result'  => 100,
+        'message' => json_last_error_msg()
+    );
+}
 print_r(json_encode($result));
 $service->close();

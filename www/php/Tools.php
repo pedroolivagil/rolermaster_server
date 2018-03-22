@@ -23,7 +23,7 @@ final class Tools {
     public function writeToFile($fileName, $arrayText, $flagsOpen = "w") {
         $file = fopen($fileName, $flagsOpen);
         foreach ($arrayText as $key => $value) {
-            fwrite($file, "[" . date("YYYY-MM-DD") . "] [$key]" . $value . PHP_EOL);
+            fwrite($file, "[" . date("Y-M-D H:i:s") . "] [$key]" . $value . PHP_EOL);
         }
         fclose($file);
     }
