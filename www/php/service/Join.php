@@ -7,6 +7,7 @@
  */
 
 class Join {
+
     private $table;
     private $alias;
     private $pk;
@@ -25,16 +26,15 @@ class Join {
      * @param $pkTableJoin      String
      * @param $restrict         Boolean
      */
-    public function __construct($table = NULL, $tableJoin = NULL, $alias = NULL, $aliasTableJoin = NULL, $pk = NULL, $pkTableJoin = NULL, $restrict = NULL) {
-        $this->table = $table;
-        $this->tableJoin = $tableJoin;
-        $this->alias = $alias;
-        $this->aliasTableJoin = $aliasTableJoin;
-        $this->pk = $pk;
-        $this->pkTableJoin = $pkTableJoin;
-        $this->restrict = $restrict;
+    public function __construct($joinArray) {
+        $this->table = $joinArray[ 'entityParent' ];
+        $this->tableJoin = $joinArray[ 'entityJoin' ];
+        $this->alias = $joinArray[ 'entityParent' ];
+        $this->aliasTableJoin = $joinArray[ 'entityJoin' ];
+        $this->pk = $joinArray[ 'pkParent' ];
+        $this->pkTableJoin = $joinArray[ 'pkJoin' ];
+        $this->restrict = $joinArray[ 'restrict' ];
     }
-
 
     /**
      * @return mixed
@@ -143,5 +143,4 @@ class Join {
         $condition .= " ON $this->alias.$this->pk = $this->aliasTableJoin.$this->pkTableJoin";
         return $condition;
     }
-
 }

@@ -56,50 +56,41 @@ $idEntity = $_POST['idEntity'];*/
         )
     )
 );*/
-
 /*echo json_encode($result);*/
 //URL de prueba
 /*http://localhost/rolermaster/www/php/read.php?entityQuery=locale&typeQuery=1&filter%5B0%5D=codeISO&filter%5B1%5D=idLocale&codeISO=ES&idLocale=142*/
+//http://localhost/rolermaster/www/php/read.php?entityQuery=locale&filter[0]=codeISO&filter[1]=idLocale&filter[2]=join&join[0][entityParent]=locale&join[0][entityJoin]=locale_trans&join[0][pkParent]=idLocale&join[0][pkJoin]=idLocaleGroup&join[0][restrict]=0&codeISO=ES&idLocale=45
 require_once('service/Service.php');
 require_once('Tools.php');
-echo '[';
-$typeQuery = $_REQUEST['typeQuery'];
-$entity = $_REQUEST['entityQuery'];
-$userId = $_REQUEST['userId'];
-$filter = $_REQUEST['filter'];
-$search = $_REQUEST[$filter[0]];
-//print_r($_REQUEST);
+$entity = $_REQUEST[ 'entityQuery' ];
+$filter = $_REQUEST[ 'filter' ];
 $params = array();
+$joins = array();
 foreach ($filter as $key => $value) {
-    //if($value != "joins") { dehabilitado para el testing
-    $params = array_merge($params, array($value => $_REQUEST[$value]));
-    //}
+    if ($value != "join") {
+        $params = array_merge($params, array( $value => $_REQUEST[ $value ] ));
+    } else {
+        $joins = array_merge($joins, array( $value => $_REQUEST[ $value ] ));
+    }
 }
-
-print_r(json_encode($params));
-echo ',';
-
+$arrayJoins = array();
+foreach ($joins as $join) {
+    foreach ($join as $value) {
+        array_push($arrayJoins, new Join($value));
+    }
+}
 $service = new Service();
 $query = new Query();
 $query->setTable($entity);
-$query->setJoins(array(
-    new Join('locale', 'locale_trans', 'locale', 'locale_trans', 'idLocale', 'idLocaleGroup', false)
-));
-$query->setFields($params);/*
-print_r(json_encode(array("Columns" => $query->getColumns())));
-$cols = array($entity => $service->getColumns($query));
-echo ',';
-print_r($cols);
-echo ',';*/
-
-print_r(json_encode(array("Query" => $query->toFind())));
-echo ',';
-
-$result = array($entity => $service->executeFind($query));
-
+$query->setJoins($arrayJoins);
+$query->setFields($params);
+$results = $service->executeFind($query);
+$result = array(
+    'result'      => 200,
+    'joins'       => $joins,
+    'arrayJoins' => $arrayJoins,
+    "query"       => $query->toFind(),
+    'entities'    => $results
+);
 print_r(json_encode($result));
-echo ',';
-
-print_r(json_encode(array('result' => 'ok')));
-echo "]";
 $service->close();
