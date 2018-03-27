@@ -1,0 +1,6 @@
+
+[2018-Mar-Fri 00:30:37] [entityParent]locale
+[2018-Mar-Fri 00:30:37] [entityJoin]locale_trans
+[2018-Mar-Fri 00:30:37] [pkParent]idLocale
+[2018-Mar-Fri 00:30:37] [pkJoin]idLocaleGroup
+[2018-Mar-Fri 00:30:37] [restrict]0
