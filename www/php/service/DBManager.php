@@ -5,13 +5,13 @@
  * Date: 05/02/2018
  * Time: 13:43
  */
-include_once('DB.php');
 
-abstract class DBManager implements DB {
+abstract class DBManager {
 
     private $connection;
     private $problems;
     private $transaction;
+    private $errorInfo;
 
     public function close() {
         if ($this->transaction && $this->problems == 0) {
@@ -27,7 +27,7 @@ abstract class DBManager implements DB {
             $this->connection = NULL;
             $this->problems = 0;
             // Conectar
-            $this->connection = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_DB, DB_USER, DB_PASSWORD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8';"));
+            $this->connection = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_DB, DB_USER, DB_PASSWORD, array( PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8';" ));
             // Establecer el nivel de errores a EXCEPTION
             $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
@@ -81,6 +81,7 @@ abstract class DBManager implements DB {
             try {
                 if ($e != NULL) {
                     error_log($e->getMessage());
+                    $this->errorInfo = $this->connection->errorInfo();
                 }
                 if ($this->transaction === TRUE && $this->connection->inTransaction()) {
                     $retorno = $this->connection->rollBack();
@@ -106,78 +107,7 @@ abstract class DBManager implements DB {
         return $retorno;
     }
 
-    public function getColumns(Query $query = NULL, $table = NULL, $alias = "t1") {
-        $retorno = NULL;
-        $this->begin();
-        try {
-            if ($query != NULL && ($result = $this->connection->query($query->getColumns($table))) !== FALSE) {
-                $result = $result->fetchAll(PDO::FETCH_CLASS);
-                if ($result != NULL) {
-                    $retorno = array();
-                    foreach ($result as $field) {
-                        array_push($retorno, $alias . '.' . $field->Field);
-                    }
-                }
-            } else {
-                throw new PDOException("Query is null");
-            }
-        } catch (PDOException $e) {
-            $this->rollBack($e);
-        }
-        return $retorno;
-    }
-
-    public function executeFind(Query $query = NULL) {
-        $retorno = NULL;
-        $this->begin();
-        try {
-            if ($query != NULL && ($result = $this->connection->query($query->toFind())) !== FALSE) {
-                $retorno = $result->fetchAll(PDO::FETCH_CLASS);
-            } else {
-                throw new PDOException("Query is null");
-            }
-        } catch (PDOException $e) {
-            $this->rollBack($e);
-        }
-        return $retorno;
-    }
-
-    public function preparedQuery(Query $query) {
-        //TODO: substituir comportamiento con la funcion siguiente y transformando con json_decode
-        $retorno = NULL;
-        $this->begin();
-        try {
-            if ($query != NULL) {
-                $sentencia = $this->connection->prepare($query);
-                $sentencia->execute($query->getParameters());
-                $retorno = json_decode(json_encode($sentencia->fetchAll(PDO::FETCH_CLASS), TRUE), TRUE);
-            } else {
-                throw new PDOException("Query is null");
-            }
-        } catch (PDOException $e) {
-            $this->rollBack($e);
-        }
-        return $retorno;
-    }
-
-    public function preparedQueryToJSON(Query $query) {
-        $retorno = NULL;
-        $this->begin();
-        try {
-            if ($query != NULL) {
-                $sentencia = $this->connection->prepare($query);
-                $sentencia->execute($query->getParameters());
-                $retorno = json_encode($sentencia->fetchAll(PDO::FETCH_CLASS));
-            } else {
-                throw new PDOException("Query is null");
-            }
-        } catch (PDOException $e) {
-            $this->rollBack($e);
-        }
-        return $retorno;
-    }
-
-    public function preparedToJSON($query = NULL) {
+    public function fetch($query = NULL) {
         $retorno = NULL;
         $this->begin();
         try {
@@ -191,32 +121,34 @@ abstract class DBManager implements DB {
         } catch (PDOException $e) {
             $this->rollBack($e);
         }
+        $this->errorInfo = $this->connection->errorInfo();
         return $retorno;
     }
 
-    public function find(Query $query = NULL) {
-        $retorno = FALSE;
+    public function fetchAll($query = NULL) {
+        $retorno = NULL;
         $this->begin();
         try {
             if ($query != NULL) {
-                if ($result = $this->connection->query($query->toFind()) !== FALSE) {
-                    $retorno = json_encode($result->fetchAll(PDO::FETCH_CLASS));
-                }
+                $sentencia = $this->connection->prepare($query);
+                $sentencia->execute();
+                $retorno = json_encode($sentencia->fetchAll(PDO::FETCH_ASSOC));
             } else {
                 throw new PDOException("Query is null");
             }
         } catch (PDOException $e) {
             $this->rollBack($e);
         }
+        $this->errorInfo = $this->connection->errorInfo();
         return $retorno;
     }
 
-    public function persist(Query $query) {
+    public function execute($query) {
         $retorno = FALSE;
         $this->begin();
         try {
             if ($query != NULL) {
-                $sentencia = $this->connection->prepare($query->toPersist());
+                $sentencia = $this->connection->prepare($query);
                 $sentencia->execute();
                 $retorno = TRUE;
             } else {
@@ -225,40 +157,7 @@ abstract class DBManager implements DB {
         } catch (PDOException $e) {
             $this->rollBack($e);
         }
-        return $retorno;
-    }
-
-    public function merge(Query $query) {
-        $retorno = FALSE;
-        $this->begin();
-        try {
-            if ($query != NULL) {
-                $sentencia = $this->connection->prepare($query->toMerge());
-                $sentencia->execute();
-                $retorno = TRUE;
-            } else {
-                throw new PDOException("Query is null");
-            }
-        } catch (PDOException $e) {
-            $this->rollBack($e);
-        }
-        return $retorno;
-    }
-
-    public function remove(Query $query) {
-        $retorno = FALSE;
-        $this->begin();
-        try {
-            if ($query != NULL) {
-                $sentencia = $this->connection->prepare($query->toRemove());
-                $sentencia->execute();
-                $retorno = TRUE;
-            } else {
-                throw new PDOException("Query is null");
-            }
-        } catch (PDOException $e) {
-            $this->rollBack($e);
-        }
+        $this->errorInfo = $this->connection->errorInfo();
         return $retorno;
     }
 
@@ -272,4 +171,10 @@ abstract class DBManager implements DB {
         }
     }
 
+    /**
+     * @return mixed
+     */
+    public function getErrorInfo() {
+        return $this->errorInfo;
+    }
 }
