@@ -81,8 +81,8 @@ abstract class DBManager {
             try {
                 if ($e != NULL) {
                     error_log($e->getMessage());
-                    $this->errorInfo = $this->connection->errorInfo();
                 }
+                $this->errorInfo = $this->connection->errorInfo();
                 if ($this->transaction === TRUE && $this->connection->inTransaction()) {
                     $retorno = $this->connection->rollBack();
                 }
